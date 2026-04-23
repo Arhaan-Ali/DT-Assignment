@@ -1,0 +1,399 @@
+[
+    {
+      "id": "START",
+      "parentId": null,
+      "type": "start",
+      "text": "Good evening, before you wrap up, let's reflect on how today felt.",
+      "options": "",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A1_OPEN",
+      "parentId": "START",
+      "type": "question",
+      "text": "Choose the option that best matches how today felt.",
+      "options": "Tough|Productive|Frustrating|Mixed",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A1_TOUGH_FOLLOWUP",
+      "parentId": "A1_OPEN",
+      "type": "question",
+      "text": "You said today felt tough. When things went south, what were your first instincts?",
+      "options": "I focused on what I could control|I wanted the team to regroup|I wanted someone to step up|I was not sure what the next move was",
+      "target": "",
+      "signal": "answer=Tough"
+    },
+    {
+      "id": "A1_PRODUCTIVE_FOLLOWUP",
+      "parentId": "A1_OPEN",
+      "type": "question",
+      "text": "You said today felt productive. When something went well, what helped most?",
+      "options": "I adapted well|It was a team effort|Luck was on my side|I prepared well",
+      "target": "",
+      "signal": "answer=Productive"
+    },
+    {
+      "id": "A1_FRUSTRATING_FOLLOWUP",
+      "parentId": "A1_OPEN",
+      "type": "question",
+      "text": "You said today felt frustrating. When things didn't go as planned, how did you handle those situations?",
+      "options": "I narrowed down what mattered most|I took a break and came back stronger|I was not sure what the next move was|I wanted the team to put in more effort",
+      "target": "",
+      "signal": "answer=Frustrating"
+    },
+    {
+      "id": "A1_MIXED_FOLLOWUP",
+      "parentId": "A1_OPEN",
+      "type": "question",
+      "text": "You said today felt mixed. What had the biggest impact on making the day feel that way?",
+      "options": "I felt things weren't in my control|Some things went well but still it others did not, wasn't enough|I kept adapting even when things shifted|I had the support but there were still setbacks",
+      "target": "",
+      "signal": "answer=Mixed"
+    },
+    {
+      "id": "A1_D1",
+      "parentId": "A1_TOUGH_FOLLOWUP",
+      "type": "decision",
+      "text": "",
+      "options": "answer=I focused on what I could control|I felt stuck:A1_R_INT;answer=I wanted the team to regroup|I wanted someone to step up:A1_R_COLLAB_TOUGH;answer=I felt stuck:A1_R_EXT",
+      "target": "",
+      "signal": "answer=I focused on what I could control:axis1:internal(1.0);answer=I wanted the team to regroup:axis1:collaborative(0.25 internal + 0.75 external);answer=I wanted someone to step up:axis1:external(1.0);answer=I felt stuck:axis1:external(1.0)"
+    },
+    {
+      "id": "A1_D2",
+      "parentId": "A1_PRODUCTIVE_FOLLOWUP",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=I adapted well:axis1:internal(1.0);answer=It was a team effort:axis1:collaborative(0.75 internal + 0.25 external);answer=Luck was on my side:axis1:external(1.0);answer=I prepared well:axis1:internal(1.0)"
+    },
+    {
+      "id": "A1_D3",
+      "parentId": "A1_FRUSTRATING_FOLLOWUP",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=I focused on what I could control:axis1:internal(1.0);answer=I took a break and came back stronger:axis1:collaborative(0.25 internal + 0.75 external);answer=I felt stuck:axis1:external(1.0);answer=I wanted the team to put in more effort:axis1:external(1.0)"
+    },
+    {
+      "id": "A1_D4",
+      "parentId": "A1_MIXED_FOLLOWUP",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=I felt things weren't in my control:axis1:external(1.0);answer=Some things went well but still it others did not:axis1:collaborative(0.25 internal + 0.75 external);answer=I kept adapting even when things shifted:axis1:collaborative(0.5 internal + 0.5 external);answer=I had the support but there were still setbacks:axis1:internal(1.0)"
+    },
+    {
+      "id": "A1_R_INT",
+      "parentId": "A1_D1",
+      "type": "reflection",
+      "text": "You see your hand in what happened today. That's agency — not everything went your way, but you stayed in the driver's seat.",
+      "options": "",
+      "target": "",
+      "signal": "axis1:internal"
+    },
+    {
+      "id": "A1_R_COLLAB",
+      "parentId": "A1_D1",
+      "type": "reflection",
+      "text": "Teams play a big part in how the day goes. But when we look at how the team did, we sometimes overlook our own actions.",
+      "options": "",
+      "target": "",
+      "signal": "axis1:collaborative"
+    },
+    {
+      "id": "A1_R_EXT",
+      "parentId": "A1_D1",
+      "type": "reflection",
+      "text": "A tough day pulls attention outward — to what others did or didn't do. Fair enough. But somewhere in there, you made a call. What was it?",
+      "options": "",
+      "target": "",
+      "signal": "axis1:external"
+    },
+    {
+      "id": "A1_Q2_LOCUS",
+      "parentId": "A1_R_INT",
+      "type": "question",
+      "text": "Looking back, how much of today's outcome do you think was shaped by your actions?",
+      "options": "It was a team effort|My decisions played a big role|The direction was mostly set by others|My choices didn't seem to affect the outcome much",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A1_D5",
+      "parentId": "A1_Q2_LOCUS",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=It was a team effort:axis1:collaborative;answer=My decisions played a big role:axis1:internal;answer=The direction was mostly set by others:axis1:external;answer=My choices didn't seem to affect the outcome much:axis1:external"
+    },
+    {
+      "id": "BRIDGE_1A",
+      "parentId": "A1_D5",
+      "type": "bridge",
+      "text": "Great! lets keep going on this reflection journey",
+      "options": "",
+      "target": "A1_INTERACTION",
+      "signal": ""
+    },
+    {
+      "id": "A1_INTERACTION",
+      "parentId": null,
+      "type": "question",
+      "text": "Think about one difficult interaction you had today. How could it have been better?",
+      "options": "I could have handled it better|If we had communicated better|If the other person had acted differently|It was a difficult situation, nothing could have changed it",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A1_D6",
+      "parentId": "A1_INTERACTION",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=I could have handled it better:axis1:internal;answer=If we had communicated better:axis1:collaborative;answer=If the other person had acted differently:axis1:external;answer=It was a difficult situation, nothing could have changed it:axis1:external"
+    },
+    {
+      "id": "BRIDGE_1B",
+      "parentId": "A1_D6",
+      "type": "bridge",
+      "text": "Time given on introspection about the day isn't wasted",
+      "options": "",
+      "target": "A2_OPEN",
+      "signal": ""
+    },
+    {
+      "id": "A2_OPEN",
+      "parentId": null,
+      "type": "question",
+      "text": "Think about today, did you find yourself giving more or receiving more?",
+      "options": "I helped someone|I taught someone something|I wanted others to be more receptive about me|Everyone should know their part of the work",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A2_D1",
+      "parentId": "A2_OPEN",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=I helped someone:axis2:contribution;answer=I taught someone something:axis2:contribution;answer=I wanted others to be more receptive about me:axis2:entitlement;answer=Everyone should know their part of the work:axis2:entitlement"
+    },
+    {
+      "id": "A2_R_CONTRIBUTION",
+      "parentId": "A2_D1",
+      "type": "reflection",
+      "text": "You showed willingness to provide what you could. That usually shapes how the day unfolds.",
+      "options": "",
+      "target": "",
+      "signal": "axis2:contribution"
+    },
+    {
+      "id": "A2_R_ENTITLEMENT",
+      "parentId": "A2_D1",
+      "type": "reflection",
+      "text": "Today leaned more toward what you were receiving. That can happen when the day feels tough.",
+      "options": "",
+      "target": "",
+      "signal": "axis2:entitlement"
+    },
+    {
+      "id": "A2_Q2_TEAM",
+      "parentId": "A2_R_CONTRIBUTION",
+      "type": "question",
+      "text": "In a team setting, what feels more natural to you?",
+      "options": "Working together and figuring things out as a group|Helping others even if it's not my responsibility|Expecting everyone to know their part so things work smoothly|Relying on others to guide what needs to be done",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A2_D2",
+      "parentId": "A2_Q2_TEAM",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=Working together and figuring things out as a group:axis2:contribution;answer=Helping others even if it's not my responsibility:axis2:contribution;answer=Expecting everyone to know their part so things work smoothly:axis2:entitlement;answer=Relying on others to guide what needs to be done:axis2:entitlement"
+    },
+    {
+      "id": "A2_Q3_SHAPED",
+      "parentId": "A2_D2",
+      "type": "question",
+      "text": "What do you think shaped how today turned out?",
+      "options": "How we worked together|How well everyone knew what to do|Whether people followed through on their part|How we supported each other",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A2_D3",
+      "parentId": "A2_Q3_SHAPED",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=How we worked together:axis2:contribution;answer=How well everyone knew what to do:axis2:entitlement;answer=Whether people followed through on their part:axis2:entitlement;answer=How we supported each other:axis2:contribution"
+    },
+    {
+      "id": "BRIDGE_2A",
+      "parentId": "A2_D3",
+      "type": "bridge",
+      "text": "Keeping yout attention at important parts of the day is key.",
+      "options": "",
+      "target": "A3_OPEN",
+      "signal": ""
+    },
+    {
+      "id": "A3_OPEN",
+      "parentId": null,
+      "type": "question",
+      "text": "When you thought about your work today, what came to mind most?",
+      "options": "My own responsibilities|Keeping things moving with the team|How my actions would affect the end user|Making sure my work was done right",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A3_D1",
+      "parentId": "A3_OPEN",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=My own responsibilities:axis3:self-centralism;answer=Keeping things moving with the team:axis3:altrocentralism;answer=How my actions would affect the end user:axis3:altrocentralism;answer=Making sure my work was done right:axis3:self-centralism"
+    },
+    {
+      "id": "A3_R_SELF",
+      "parentId": "A3_D1",
+      "type": "reflection",
+      "text": "Today seemed focused around getting through your own tasks. That kind of focus can help keep things steady.",
+      "options": "",
+      "target": "",
+      "signal": "axis3:self-centralism"
+    },
+    {
+      "id": "A3_R_ALTRO",
+      "parentId": "A3_D1",
+      "type": "reflection",
+      "text": "You seemed aware of others around you today. That kind of focus tends to shape how things move.",
+      "options": "",
+      "target": "",
+      "signal": "axis3:altrocentralism"
+    },
+    {
+      "id": "A3_Q2_TIME",
+      "parentId": "A3_R_SELF",
+      "type": "question",
+      "text": "If you had extra time today, where would it most likely go?",
+      "options": "Making sure my work is done really well|Helping someone from my team who is falling behind|Keeping things on track for the deadline|Getting ahead on my own work",
+      "target": "",
+      "signal": ""
+    },
+    {
+      "id": "A3_D2",
+      "parentId": "A3_Q2_TIME",
+      "type": "decision",
+      "text": "",
+      "options": "",
+      "target": "",
+      "signal": "answer=Making sure my work is done really well:axis3:self-centralism;answer=Helping someone from my team who is falling behind:axis3:altrocentralism;answer=Keeping things on track for the deadline:axis3:altrocentralism;answer=Getting ahead on my own work:axis3:self-centralism"
+    },
+    {
+      "id": "CALCULATE",
+      "parentId": "A3_D2",
+      "type": "calculate",
+      "text": "Calculate Axis 1, Axis 2 & Axis 3 dominant",
+      "options": "",
+      "target": "SUMMARY",
+      "signal": ""
+    },
+    {
+      "id": "SUMMARY_INT_COLLAB_ALTRO",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "You stayed focused on what you could control today. You leaned toward contributing where you could, and your attention went beyond just your own work. That kind of combination usually shapes how the day moves forward.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:internal;axis2:contribution;axis3:altrocentralism"
+    },
+    {
+      "id": "SUMMARY_INT_SELF_ENTITLE",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "You handled things with a sense of control today. Your focus leaned more toward what you were expecting, and your attention stayed mostly on your own work. That often influences how the day comes across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:internal;axis2:entitlement;axis3:self-centralism"
+    },
+    {
+      "id": "SUMMARY_INT_SELF_CONTRIB",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "You kept control over how you approached the day. You leaned toward contributing, even while staying focused on your own work. That kind of balance is worth noticing.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:internal;axis2:contribution;axis3:self-centralism"
+    },
+    {
+      "id": "SUMMARY_INT_ALTRO_ENTITLE",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "You stayed focused on what you could control today. Your attention went beyond just your own work, while your focus also leaned toward what you were expecting. That combination shapes how the day comes across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:internal;axis2:entitlement;axis3:altrocentralism"
+    },
+    {
+      "id": "SUMMARY_EXT_SELF_COLLAB",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "Parts of today felt influenced by what was happening around you. Most of your focus stayed on your own work, with some shared effort along the way. That mix often affects how the day comes across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:external;axis2:contribution;axis3:self-centralism"
+    },
+    {
+      "id": "SUMMARY_EXT_SELF_ENTITLE",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "Parts of today felt influenced by what was happening around you. Most of your attention stayed on your own work, while you were also aware of what you were expecting. That mix often affects how the day comes across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:external;axis2:entitlement;axis3:self-centralism"
+    },
+    {
+      "id": "SUMMARY_EXT_ALTRO_COLLAB",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "Parts of today felt influenced by what was happening around you. Your focus included others, and things moved through shared effort. That mix often affects how the day comes across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:external;axis2:contribution;axis3:altrocentralism"
+    },
+    {
+      "id": "SUMMARY_EXT_ALTRO_ENTITLE",
+      "parentId": "CALCULATE",
+      "type": "summary",
+      "text": "Parts of today felt influenced by what was happening around you. Your focus included others, while you were also aware of what you were expecting from the day. That mix often affects how things come across.",
+      "options": "",
+      "target": "END",
+      "signal": "axis1:external;axis2:entitlement;axis3:altrocentralism"
+    },
+    {
+      "id": "END",
+      "parentId": null,
+      "type": "end",
+      "text": "See you tomorrow.",
+      "options": "",
+      "target": "",
+      "signal": ""
+    }
+  ]
+  

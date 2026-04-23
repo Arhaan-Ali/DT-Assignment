@@ -1,0 +1,361 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#0f0f11;--surface:#18181c;--surface2:#202026;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text-primary:#e8e8ea;--text-secondary:#8a8a96;--text-muted:#5a5a66;
+    --accent:#5c7cff;--accent-soft:rgba(92,124,255,0.12);--accent-softer:rgba(92,124,255,0.06);
+    --green:#3ecf8e;--green-soft:rgba(62,207,142,0.1);
+    --bot-bubble:#1c1c22;--option-bg:#1e1e26;--option-hover:#252530;
+    --option-selected:rgba(92,124,255,0.15);--option-border:rgba(255,255,255,0.08);
+    --option-border-selected:rgba(92,124,255,0.5);
+    --serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',-apple-system,sans-serif;
+    --radius:14px;--radius-sm:8px;
+  }
+  body{background:var(--bg);font-family:var(--sans);color:var(--text-primary);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+  #chat-wrap{width:100%;max-width:640px;min-height:580px;max-height:700px;display:flex;flex-direction:column;background:var(--bg);border:0.5px solid var(--border);border-radius:20px;overflow:hidden;margin:0 auto;position:relative;}
+  #chat-header{padding:18px 24px 16px;border-bottom:0.5px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--accent-soft);border:1px solid rgba(92,124,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .avatar svg{width:16px;height:16px;}
+  .header-text h2{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--text-primary);letter-spacing:0.01em;}
+  .header-text p{font-size:12px;color:var(--text-muted);margin-top:1px;font-weight:300;}
+  .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:auto;box-shadow:0 0 8px rgba(62,207,142,0.5);}
+  #messages{flex:1;overflow-y:auto;padding:24px 20px 16px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
+  #messages::-webkit-scrollbar{width:3px;}
+  #messages::-webkit-scrollbar-track{background:transparent;}
+  #messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .msg{display:flex;flex-direction:column;gap:8px;animation:msgIn 0.35s cubic-bezier(0.22,0.61,0.36,1) both;}
+  @keyframes msgIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .bubble{max-width:88%;padding:13px 16px;border-radius:var(--radius);font-size:14px;line-height:1.65;color:var(--text-primary);background:var(--bot-bubble);border:0.5px solid var(--border);align-self:flex-start;font-weight:300;letter-spacing:0.01em;}
+  .bubble.reflection{background:var(--surface2);border-color:var(--border2);font-family:var(--serif);font-size:14.5px;color:#c4c4d0;font-style:italic;border-left:2px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;}
+  .bubble.bridge{background:var(--accent-softer);border-color:rgba(92,124,255,0.2);font-size:13px;color:var(--text-secondary);letter-spacing:0.02em;font-weight:400;}
+  .bubble.summary{background:var(--green-soft);border-color:rgba(62,207,142,0.2);font-family:var(--serif);font-size:14.5px;color:#c8e8d8;font-style:italic;max-width:92%;}
+  .bubble.end-msg{background:var(--surface);border-color:var(--border);font-size:13px;color:var(--text-muted);font-weight:300;letter-spacing:0.05em;}
+  .options-wrap{display:flex;flex-direction:column;gap:7px;align-self:flex-start;width:100%;animation:msgIn 0.4s cubic-bezier(0.22,0.61,0.36,1) 0.12s both;}
+  .option-btn{background:var(--option-bg);border:0.5px solid var(--option-border);border-radius:var(--radius-sm);padding:11px 15px;font-family:var(--sans);font-size:13.5px;color:var(--text-secondary);cursor:pointer;text-align:left;transition:all 0.18s ease;display:flex;align-items:center;gap:10px;font-weight:300;letter-spacing:0.01em;line-height:1.4;position:relative;overflow:hidden;}
+  .option-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--accent-soft) 0%,transparent 60%);opacity:0;transition:opacity 0.2s;}
+  .option-btn:hover{background:var(--option-hover);border-color:var(--border2);color:var(--text-primary);}
+  .option-btn:hover::before{opacity:1;}
+  .option-btn.selected{background:var(--option-selected);border-color:var(--option-border-selected);color:#a0aeff;pointer-events:none;}
+  .option-btn.selected::before{opacity:1;}
+  .option-btn.dimmed{opacity:0.35;pointer-events:none;}
+  .check{width:18px;height:18px;border-radius:50%;border:1px solid var(--option-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.18s ease;}
+  .option-btn:hover .check{border-color:rgba(92,124,255,0.5);}
+  .option-btn.selected .check{background:var(--accent);border-color:var(--accent);}
+  .check svg{width:10px;height:10px;opacity:0;transition:opacity 0.15s;}
+  .option-btn.selected .check svg{opacity:1;}
+  .typing{display:flex;align-items:center;gap:5px;padding:13px 16px;background:var(--bot-bubble);border:0.5px solid var(--border);border-radius:var(--radius);align-self:flex-start;animation:msgIn 0.3s ease both;}
+  .typing span{width:5px;height:5px;border-radius:50%;background:var(--text-muted);animation:dot 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:0.2s;}
+  .typing span:nth-child(3){animation-delay:0.4s;}
+  @keyframes dot{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
+  #input-area{padding:14px 20px;border-top:0.5px solid var(--border);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .input-hint{font-size:12px;color:var(--text-muted);font-weight:300;letter-spacing:0.02em;}
+  #restart-btn{background:transparent;border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:8px 18px;font-family:var(--sans);font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;display:none;}
+  #restart-btn:hover{background:var(--surface2);color:var(--text-primary);}
+  .progress-bar{height:2px;background:var(--border);position:relative;overflow:hidden;flex-shrink:0;}
+  .progress-fill{height:100%;background:var(--accent);transition:width 0.6s cubic-bezier(0.4,0,0.2,1);opacity:0.6;}
+</style>
+
+<div id="chat-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+  <div id="chat-header">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5c7cff" stroke-width="1.5">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+        <path d="M8 12h8M12 8v8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h2>End-of-Day Reflection</h2>
+      <p>A quiet space to close the day</p>
+    </div>
+    <div class="status-dot"></div>
+  </div>
+  <div id="messages"></div>
+  <div id="input-area">
+    <span class="input-hint" id="hint">Select an option to continue</span>
+    <button id="restart-btn" onclick="restartFlow()">Begin again</button>
+  </div>
+</div>
+
+<script>
+const TREE=[{"id":"START","parentId":null,"type":"start","text":"Good evening, before you wrap up, let's reflect on how today felt.","options":"","target":"","signal":""},{"id":"A1_OPEN","parentId":"START","type":"question","text":"Choose the option that best matches how today felt.","options":"Tough|Productive|Frustrating|Mixed","target":"","signal":""},{"id":"A1_TOUGH_FOLLOWUP","parentId":"A1_OPEN","type":"question","text":"You said today felt tough. When things went south, what were your first instincts?","options":"I focused on what I could control|I wanted the team to regroup|I wanted someone to step up|I was not sure what the next move was","target":"","signal":"answer=Tough"},{"id":"A1_PRODUCTIVE_FOLLOWUP","parentId":"A1_OPEN","type":"question","text":"You said today felt productive. When something went well, what helped most?","options":"I adapted well|It was a team effort|Luck was on my side|I prepared well","target":"","signal":"answer=Productive"},{"id":"A1_FRUSTRATING_FOLLOWUP","parentId":"A1_OPEN","type":"question","text":"You said today felt frustrating. When things didn't go as planned, how did you handle those situations?","options":"I narrowed down what mattered most|I took a break and came back stronger|I was not sure what the next move was|I wanted the team to put in more effort","target":"","signal":"answer=Frustrating"},{"id":"A1_MIXED_FOLLOWUP","parentId":"A1_OPEN","type":"question","text":"You said today felt mixed. What had the biggest impact on making the day feel that way?","options":"I felt things weren't in my control|Some things went well but still it others did not, wasn't enough|I kept adapting even when things shifted|I had the support but there were still setbacks","target":"","signal":"answer=Mixed"},{"id":"A1_D1","parentId":"A1_TOUGH_FOLLOWUP","type":"decision","text":"","options":"answer=I focused on what I could control|I was not sure what the next move was:A1_R_INT;answer=I wanted the team to regroup|I wanted someone to step up:A1_R_COLLAB_TOUGH;answer=I was not sure what the next move was:A1_R_EXT","target":"","signal":"answer=I focused on what I could control:axis1:internal(1.0);answer=I wanted the team to regroup:axis1:collaborative(0.25 internal + 0.75 external);answer=I wanted someone to step up:axis1:external(1.0);answer=I was not sure what the next move was:axis1:external(1.0)"},{"id":"A1_D2","parentId":"A1_PRODUCTIVE_FOLLOWUP","type":"decision","text":"","options":"","target":"","signal":"answer=I adapted well:axis1:internal(1.0);answer=It was a team effort:axis1:collaborative(0.75 internal + 0.25 external);answer=Luck was on my side:axis1:external(1.0);answer=I prepared well:axis1:internal(1.0)"},{"id":"A1_D3","parentId":"A1_FRUSTRATING_FOLLOWUP","type":"decision","text":"","options":"","target":"","signal":"answer=I narrowed down what mattered most:axis1:internal(1.0);answer=I took a break and came back stronger:axis1:collaborative(0.25 internal + 0.75 external);answer=I was not sure what the next move was:axis1:external(1.0);answer=I wanted the team to put in more effort:axis1:external(1.0)"},{"id":"A1_D4","parentId":"A1_MIXED_FOLLOWUP","type":"decision","text":"","options":"","target":"","signal":"answer=I felt things weren't in my control:axis1:external(1.0);answer=Some things went well but still it others did not:axis1:collaborative(0.25 internal + 0.75 external);answer=I kept adapting even when things shifted:axis1:collaborative(0.5 internal + 0.5 external);answer=I had the support but there were still setbacks:axis1:internal(1.0)"},{"id":"A1_R_INT","parentId":"A1_D1","type":"reflection","text":"You see your hand in what happened today. That's agency — not everything went your way, but you stayed in the driver's seat.","options":"","target":"","signal":"axis1:internal"},{"id":"A1_R_COLLAB","parentId":"A1_D1","type":"reflection","text":"Teams play a big part in how the day goes. But when we look at how the team did, we sometimes overlook our own actions.","options":"","target":"","signal":"axis1:collaborative"},{"id":"A1_R_EXT","parentId":"A1_D1","type":"reflection","text":"A tough day pulls attention outward — to what others did or didn't do. Fair enough. But somewhere in there, you made a call. What was it?","options":"","target":"","signal":"axis1:external"},{"id":"A1_Q2_LOCUS","parentId":"A1_R_INT","type":"question","text":"Looking back, how much of today's outcome do you think was shaped by your actions?","options":"It was a team effort|My decisions played a big role|The direction was mostly set by others|My choices didn't seem to affect the outcome much","target":"","signal":""},{"id":"A1_D5","parentId":"A1_Q2_LOCUS","type":"decision","text":"","options":"","target":"","signal":"answer=It was a team effort:axis1:collaborative;answer=My decisions played a big role:axis1:internal;answer=The direction was mostly set by others:axis1:external;answer=My choices didn't seem to affect the outcome much:axis1:external"},{"id":"BRIDGE_1A","parentId":"A1_D5","type":"bridge","text":"Great! lets keep going on this reflection journey","options":"","target":"A1_INTERACTION","signal":""},{"id":"A1_INTERACTION","parentId":null,"type":"question","text":"Think about one difficult interaction you had today. How could it have been better?","options":"I could have handled it better|If we had communicated better|If the other person had acted differently|It was a difficult situation, nothing could have changed it","target":"","signal":""},{"id":"A1_D6","parentId":"A1_INTERACTION","type":"decision","text":"","options":"","target":"","signal":"answer=I could have handled it better:axis1:internal;answer=If we had communicated better:axis1:collaborative;answer=If the other person had acted differently:axis1:external;answer=It was a difficult situation, nothing could have changed it:axis1:external"},{"id":"BRIDGE_1B","parentId":"A1_D6","type":"bridge","text":"Time given on introspection about the day isn't wasted","options":"","target":"A2_OPEN","signal":""},{"id":"A2_OPEN","parentId":null,"type":"question","text":"Think about today, did you find yourself giving more or receiving more?","options":"I helped someone|I taught someone something|I wanted others to be more receptive about me|Everyone should know their part of the work","target":"","signal":""},{"id":"A2_D1","parentId":"A2_OPEN","type":"decision","text":"","options":"","target":"","signal":"answer=I helped someone:axis2:contribution;answer=I taught someone something:axis2:contribution;answer=I wanted others to be more receptive about me:axis2:entitlement;answer=Everyone should know their part of the work:axis2:entitlement"},{"id":"A2_R_CONTRIBUTION","parentId":"A2_D1","type":"reflection","text":"You showed willingness to provide what you could. That usually shapes how the day unfolds.","options":"","target":"","signal":"axis2:contribution"},{"id":"A2_R_ENTITLEMENT","parentId":"A2_D1","type":"reflection","text":"Today leaned more toward what you were receiving. That can happen when the day feels tough.","options":"","target":"","signal":"axis2:entitlement"},{"id":"A2_Q2_TEAM","parentId":"A2_R_CONTRIBUTION","type":"question","text":"In a team setting, what feels more natural to you?","options":"Working together and figuring things out as a group|Helping others even if it's not my responsibility|Expecting everyone to know their part so things work smoothly|Relying on others to guide what needs to be done","target":"","signal":""},{"id":"A2_D2","parentId":"A2_Q2_TEAM","type":"decision","text":"","options":"","target":"","signal":"answer=Working together and figuring things out as a group:axis2:contribution;answer=Helping others even if it's not my responsibility:axis2:contribution;answer=Expecting everyone to know their part so things work smoothly:axis2:entitlement;answer=Relying on others to guide what needs to be done:axis2:entitlement"},{"id":"A2_Q3_SHAPED","parentId":"A2_D2","type":"question","text":"What do you think shaped how today turned out?","options":"How we worked together|How well everyone knew what to do|Whether people followed through on their part|How we supported each other","target":"","signal":""},{"id":"A2_D3","parentId":"A2_Q3_SHAPED","type":"decision","text":"","options":"","target":"","signal":"answer=How we worked together:axis2:contribution;answer=How well everyone knew what to do:axis2:entitlement;answer=Whether people followed through on their part:axis2:entitlement;answer=How we supported each other:axis2:contribution"},{"id":"BRIDGE_2A","parentId":"A2_D3","type":"bridge","text":"Keeping yout attention at important parts of the day is key.","options":"","target":"A3_OPEN","signal":""},{"id":"A3_OPEN","parentId":null,"type":"question","text":"When you thought about your work today, what came to mind most?","options":"My own responsibilities|Keeping things moving with the team|How my actions would affect the end user|Making sure my work was done right","target":"","signal":""},{"id":"A3_D1","parentId":"A3_OPEN","type":"decision","text":"","options":"","target":"","signal":"answer=My own responsibilities:axis3:self-centralism;answer=Keeping things moving with the team:axis3:altrocentralism;answer=How my actions would affect the end user:axis3:altrocentralism;answer=Making sure my work was done right:axis3:self-centralism"},{"id":"A3_R_SELF","parentId":"A3_D1","type":"reflection","text":"Today seemed focused around getting through your own tasks. That kind of focus can help keep things steady.","options":"","target":"","signal":"axis3:self-centralism"},{"id":"A3_R_ALTRO","parentId":"A3_D1","type":"reflection","text":"You seemed aware of others around you today. That kind of focus tends to shape how things move.","options":"","target":"","signal":"axis3:altrocentralism"},{"id":"A3_Q2_TIME","parentId":"A3_R_SELF","type":"question","text":"If you had extra time today, where would it most likely go?","options":"Making sure my work is done really well|Helping someone from my team who is falling behind|Keeping things on track for the deadline|Getting ahead on my own work","target":"","signal":""},{"id":"A3_D2","parentId":"A3_Q2_TIME","type":"decision","text":"","options":"","target":"","signal":"answer=Making sure my work is done really well:axis3:self-centralism;answer=Helping someone from my team who is falling behind:axis3:altrocentralism;answer=Keeping things on track for the deadline:axis3:altrocentralism;answer=Getting ahead on my own work:axis3:self-centralism"},{"id":"CALCULATE","parentId":"A3_D2","type":"calculate","text":"","options":"","target":"SUMMARY","signal":""},{"id":"SUMMARY_INT_COLLAB_ALTRO","parentId":"CALCULATE","type":"summary","text":"You stayed focused on what you could control today. You leaned toward contributing where you could, and your attention went beyond just your own work. That kind of combination usually shapes how the day moves forward.","options":"","target":"END","signal":"axis1:internal;axis2:contribution;axis3:altrocentralism"},{"id":"SUMMARY_INT_SELF_ENTITLE","parentId":"CALCULATE","type":"summary","text":"You handled things with a sense of control today. Your focus leaned more toward what you were expecting, and your attention stayed mostly on your own work. That often influences how the day comes across.","options":"","target":"END","signal":"axis1:internal;axis2:entitlement;axis3:self-centralism"},{"id":"SUMMARY_INT_SELF_CONTRIB","parentId":"CALCULATE","type":"summary","text":"You kept control over how you approached the day. You leaned toward contributing, even while staying focused on your own work. That kind of balance is worth noticing.","options":"","target":"END","signal":"axis1:internal;axis2:contribution;axis3:self-centralism"},{"id":"SUMMARY_INT_ALTRO_ENTITLE","parentId":"CALCULATE","type":"summary","text":"You stayed focused on what you could control today. Your attention went beyond just your own work, while your focus also leaned toward what you were expecting. That combination shapes how the day comes across.","options":"","target":"END","signal":"axis1:internal;axis2:entitlement;axis3:altrocentralism"},{"id":"SUMMARY_EXT_SELF_COLLAB","parentId":"CALCULATE","type":"summary","text":"Parts of today felt influenced by what was happening around you. Most of your focus stayed on your own work, with some shared effort along the way. That mix often affects how the day comes across.","options":"","target":"END","signal":"axis1:external;axis2:contribution;axis3:self-centralism"},{"id":"SUMMARY_EXT_SELF_ENTITLE","parentId":"CALCULATE","type":"summary","text":"Parts of today felt influenced by what was happening around you. Most of your attention stayed on your own work, while you were also aware of what you were expecting. That mix often affects how the day comes across.","options":"","target":"END","signal":"axis1:external;axis2:entitlement;axis3:self-centralism"},{"id":"SUMMARY_EXT_ALTRO_COLLAB","parentId":"CALCULATE","type":"summary","text":"Parts of today felt influenced by what was happening around you. Your focus included others, and things moved through shared effort. That mix often affects how the day comes across.","options":"","target":"END","signal":"axis1:external;axis2:contribution;axis3:altrocentralism"},{"id":"SUMMARY_EXT_ALTRO_ENTITLE","parentId":"CALCULATE","type":"summary","text":"Parts of today felt influenced by what was happening around you. Your focus included others, while you were also aware of what you were expecting from the day. That mix often affects how things come across.","options":"","target":"END","signal":"axis1:external;axis2:entitlement;axis3:altrocentralism"},{"id":"END","parentId":null,"type":"end","text":"See you tomorrow.","options":"","target":"","signal":""}];
+
+// Build lookup maps
+const nodeMap = {};
+const childrenMap = {}; // parentId -> [children]
+TREE.forEach(n => {
+  nodeMap[n.id] = n;
+  if (n.parentId) {
+    if (!childrenMap[n.parentId]) childrenMap[n.parentId] = [];
+    childrenMap[n.parentId].push(n);
+  }
+});
+
+function children(id) { return childrenMap[id] || []; }
+
+// State
+let axis1 = {}, axis2 = {}, axis3 = {}, stepCount = 0;
+
+// Score a signal string given the chosen answer
+function scoreSignal(signalStr, answer) {
+  if (!signalStr || !answer) return;
+  signalStr.split(';').forEach(part => {
+    // format: answer=TEXT:axisN:value
+    const m = part.trim().match(/^answer=(.+?):axis(\d):([a-z\-]+)/i);
+    if (!m) return;
+    const sigAns = m[1].trim();
+    const axNum = m[2];
+    const val = m[3].trim();
+    // fuzzy match: either exact or answer starts-with sigAns or sigAns starts-with answer (first 10 chars)
+    const a = answer.trim();
+    const s = sigAns.trim();
+    const match = a === s || a.startsWith(s.slice(0,12)) || s.startsWith(a.slice(0,12));
+    if (match) {
+      const store = axNum==='1' ? axis1 : axNum==='2' ? axis2 : axis3;
+      store[val] = (store[val]||0) + 1;
+    }
+  });
+}
+
+function dominant(store) {
+  const keys = Object.keys(store);
+  if (!keys.length) return null;
+  return keys.sort((a,b) => store[b]-store[a])[0];
+}
+
+function findSummary() {
+  const a1 = dominant(axis1) || 'internal';
+  const a2 = dominant(axis2) || 'contribution';
+  const a3 = dominant(axis3) || 'self-centralism';
+  const summaries = TREE.filter(n => n.type==='summary');
+  // Try exact 3-axis match first
+  for (const s of summaries) {
+    const sigs = s.signal.split(';').map(x=>x.trim());
+    if (sigs.some(x=>x==='axis1:'+a1) && sigs.some(x=>x==='axis2:'+a2) && sigs.some(x=>x==='axis3:'+a3)) return s;
+  }
+  // 2-axis match
+  for (const s of summaries) {
+    const sigs = s.signal.split(';').map(x=>x.trim());
+    if (sigs.some(x=>x==='axis1:'+a1) && sigs.some(x=>x==='axis2:'+a2)) return s;
+  }
+  return summaries[0];
+}
+
+// Resolve a decision node: returns next node id
+function resolveDecision(node, answer) {
+  // First score axis signals
+  scoreSignal(node.signal, answer);
+
+  // Then route via options field if present
+  if (node.options && node.options.trim()) {
+    const rules = node.options.split(';');
+    for (const rule of rules) {
+      const colonIdx = rule.lastIndexOf(':');
+      if (colonIdx < 0) continue;
+      const condPart = rule.slice(0, colonIdx).trim();
+      const targetId = rule.slice(colonIdx+1).trim();
+      if (!nodeMap[targetId]) continue;
+      // condPart may be like "answer=X|Y"
+      const conditions = condPart.replace(/^answer=/,'').split('|');
+      for (const cond of conditions) {
+        const c = cond.trim();
+        const a = (answer||'').trim();
+        if (a===c || a.startsWith(c.slice(0,12)) || c.startsWith(a.slice(0,12))) {
+          return targetId;
+        }
+      }
+    }
+  }
+
+  // No explicit routing → go to first child (which might be reflection/bridge/question)
+  const ch = children(node.id);
+  if (ch.length) return ch[0].id;
+  return null;
+}
+
+// The unified "what comes after this node" resolver
+// afterReflection: given a reflection node, find the next thing to show
+// Reflections in the JSON: their children are questions (A1_Q2_LOCUS after A1_R_INT)
+// BUT A1_R_COLLAB, A1_R_EXT, A2_R_ENTITLEMENT, A3_R_ALTRO have NO children in the JSON
+// For those, we need to jump to the hardcoded next question in the flow
+
+const REFLECTION_NEXT = {
+  // A1 tough path reflections (only A1_R_INT has a json child A1_Q2_LOCUS)
+  'A1_R_COLLAB': 'A1_Q2_LOCUS',   // collab reflection → same follow-up question
+  'A1_R_EXT':    'A1_Q2_LOCUS',   // external reflection → same follow-up question
+  // A2 entitlement reflection has no child → go to A2_Q2_TEAM (same as contribution path)
+  'A2_R_ENTITLEMENT': 'A2_Q2_TEAM',
+  // A3 altro reflection has no child → go to A3_Q2_TIME (same as self path)
+  'A3_R_ALTRO': 'A3_Q2_TIME',
+  // Productive / Frustrating / Mixed paths: after their decision nodes (D2/D3/D4),
+  // there are no reflection children in JSON — they jump straight to BRIDGE_1A
+  // We handle D2/D3/D4 → BRIDGE_1A in decision resolution
+};
+
+// After D2/D3/D4 (productive/frustrating/mixed) there's no child in JSON → hardcode → BRIDGE_1A
+const DECISION_NEXT = {
+  'A1_D2': 'BRIDGE_1A',
+  'A1_D3': 'BRIDGE_1A',
+  'A1_D4': 'BRIDGE_1A',
+};
+
+// DOM refs
+const msgs = document.getElementById('messages');
+const hint = document.getElementById('hint');
+const restartBtn = document.getElementById('restart-btn');
+
+function scrollBottom() { setTimeout(()=>{ msgs.scrollTop = msgs.scrollHeight; }, 60); }
+
+function updateProgress(n) {
+  stepCount = Math.min(stepCount+1, n||22);
+  document.getElementById('progress').style.width = Math.round((stepCount/22)*100)+'%';
+}
+
+function showTyping(delay, cb) {
+  const t = document.createElement('div');
+  t.className='typing';
+  t.innerHTML='<span></span><span></span><span></span>';
+  msgs.appendChild(t); scrollBottom();
+  setTimeout(()=>{ t.remove(); cb(); }, delay);
+}
+
+function addBubble(text, cls) {
+  const wrap = document.createElement('div'); wrap.className='msg';
+  const b = document.createElement('div'); b.className='bubble'+(cls?' '+cls:'');
+  b.textContent=text;
+  wrap.appendChild(b); msgs.appendChild(wrap); scrollBottom();
+  updateProgress();
+}
+
+function addOptions(opts, cb) {
+  const wrap = document.createElement('div'); wrap.className='options-wrap';
+  opts.forEach(opt => {
+    const btn = document.createElement('button'); btn.className='option-btn';
+    btn.innerHTML=`<span class="check"><svg viewBox="0 0 10 8" fill="none"><polyline points="1,4 4,7 9,1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>${opt}`;
+    btn.onclick=()=>{
+      wrap.querySelectorAll('.option-btn').forEach(b=>{ b.classList.add('dimmed'); b.onclick=null; });
+      btn.classList.remove('dimmed'); btn.classList.add('selected');
+      hint.textContent='Reflecting…';
+      setTimeout(()=>cb(opt), 350);
+    };
+    wrap.appendChild(btn);
+  });
+  msgs.appendChild(wrap); scrollBottom();
+  hint.textContent='Select an option to continue';
+}
+
+// Core: advance to a node
+function go(nodeId, answer) {
+  if (!nodeId || !nodeMap[nodeId]) { console.warn('Missing node:', nodeId); return; }
+  const node = nodeMap[nodeId];
+
+  if (node.type==='start') {
+    showTyping(900, ()=>{
+      addBubble(node.text);
+      const next = children(node.id)[0];
+      if (next) setTimeout(()=>go(next.id, null), 500);
+    });
+    return;
+  }
+
+  if (node.type==='question') {
+    const opts = node.options ? node.options.split('|') : [];
+    showTyping(750, ()=>{
+      addBubble(node.text);
+      setTimeout(()=>{
+        addOptions(opts, chosen=>{
+          // Find decision child
+          const dec = children(node.id).find(c=>c.type==='decision');
+          if (dec) {
+            go(dec.id, chosen);
+          } else {
+            // No decision — find signal-matched child question
+            const ch = children(node.id);
+            const match = ch.find(c=> c.signal && c.signal.replace('answer=','').trim()===chosen.trim());
+            if (match) go(match.id, chosen);
+            else if (ch.length) go(ch[0].id, chosen);
+          }
+        });
+      }, 180);
+    });
+    return;
+  }
+
+  if (node.type==='decision') {
+    const nextId = resolveDecision(node, answer);
+    // Check hardcoded overrides (D2/D3/D4 → BRIDGE_1A)
+    const override = DECISION_NEXT[node.id];
+    if (override) { setTimeout(()=>go(override, null), 80); return; }
+    if (nextId) setTimeout(()=>go(nextId, answer), 80);
+    return;
+  }
+
+  if (node.type==='reflection') {
+    showTyping(900, ()=>{
+      addBubble(node.text, 'reflection');
+      // Find next: prefer JSON children, then REFLECTION_NEXT map
+      const ch = children(node.id);
+      const nextChild = ch.find(c=>c.type==='question'||c.type==='bridge'||c.type==='decision');
+      const nextId = (nextChild && nextChild.id) || REFLECTION_NEXT[node.id];
+      if (nextId) setTimeout(()=>go(nextId, null), 1100);
+    });
+    return;
+  }
+
+  if (node.type==='bridge') {
+    showTyping(650, ()=>{
+      addBubble(node.text, 'bridge');
+      const targetId = node.target && node.target.trim() && nodeMap[node.target] ? node.target : null;
+      const ch = children(node.id);
+      const nextId = targetId || (ch.length ? ch[0].id : null);
+      if (nextId) setTimeout(()=>go(nextId, null), 800);
+    });
+    return;
+  }
+
+  if (node.type==='calculate') {
+    // Silent — find summary immediately
+    const summary = findSummary();
+    if (summary) setTimeout(()=>go(summary.id, null), 300);
+    return;
+  }
+
+  if (node.type==='summary') {
+    showTyping(1000, ()=>{
+      addBubble(node.text, 'summary');
+      const targetId = node.target && nodeMap[node.target] ? node.target : 'END';
+      setTimeout(()=>go(targetId, null), 1200);
+    });
+    return;
+  }
+
+  if (node.type==='end') {
+    showTyping(600, ()=>{
+      addBubble(node.text, 'end-msg');
+      hint.textContent='Session complete';
+      document.getElementById('progress').style.width='100%';
+      restartBtn.style.display='inline-block';
+    });
+    return;
+  }
+}
+
+// Also handle A1 question routing: A1_OPEN needs to route to the right followup question
+// We override the question handler for A1_OPEN specifically via the signal on followup nodes
+// The existing "signal-matched child" logic handles it correctly.
+
+function restartFlow() {
+  msgs.innerHTML='';
+  axis1={}; axis2={}; axis3={}; stepCount=0;
+  document.getElementById('progress').style.width='0%';
+  restartBtn.style.display='none';
+  hint.textContent='Select an option to continue';
+  setTimeout(()=>go('START', null), 400);
+}
+
+setTimeout(()=>go('START', null), 600);
+</script>
